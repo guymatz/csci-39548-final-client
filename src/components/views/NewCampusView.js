@@ -57,7 +57,7 @@ const NewCampusView = (props) => {
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>Campus Address: </label>
-            <input type="text" name="address" rquired onChange={(e) => handleChange(e)} />
+            <input type="text" name="address" required onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
