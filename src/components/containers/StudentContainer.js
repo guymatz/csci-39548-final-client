@@ -7,6 +7,7 @@ If needed, it also defines the component's "connect" function.
 ================================================== */
 import Header from './Header';
 import React, { Component } from "react";
+import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import {
     fetchStudentThunk,
@@ -15,6 +16,7 @@ import {
 import { StudentView } from "../views";
 
 class StudentContainer extends Component {
+
   // Get student data from back-end database
   componentDidMount() {
     //getting student ID from url
@@ -23,6 +25,15 @@ class StudentContainer extends Component {
 
   // Render Student view by passing student data as props to the corresponding View component
   render() {
+
+    console.log("Student State render: " + JSON.stringify(this.state))
+
+    /*
+    if(this.state.deleted) {
+      return (<Redirect to={`/students`}/>)
+    }
+    */
+
     return (
       <div>
         <Header />
