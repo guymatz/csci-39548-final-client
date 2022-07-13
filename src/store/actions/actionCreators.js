@@ -35,7 +35,7 @@ export const deleteCampus = (campusId) => {
   };
 };
 
-export const editCampus = (campus) => {
+export const editCampus = (campus, id) => {
   return {
     type: at.EDIT_CAMPUS,
     payload: campus,
