@@ -11,20 +11,28 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import EditCampusView from '../views/EditCampusView';
-import { editCampusThunk } from '../../store/thunks';
+import { editCampusThunk, fetchCampusThunk} from '../../store/thunks';
 
 class EditCampusContainer extends Component {
   // Initialize state
   constructor(props){
     super(props);
+    //console.log("props in ECC: " + JSON.stringify(props))
     this.state = {
-      name: "",
-      address: "",
-      description: null,
-      imageUrl: "",
+      name: this.props.campus.name,
+      imageUrl: this.props.campus.imageUrl,
+      address: this.props.campus.address,
+      description: this.props.campus.description,
       redirect: false,
-      redirectId: null
+      redirectId: this.props.campus.id
     };
+  }
+
+  // Get the specific campus data from back-end database
+  componentDidMount() {
+    // Get campus ID from URL (API link)
+    this.props.fetchCampus(this.props.match.params.id);
+    //console.log("props in ECC-CDM: " + JSON.stringify(this.props))
   }
 
   // Capture input data when it is entered
@@ -39,23 +47,26 @@ class EditCampusContainer extends Component {
     event.preventDefault();  // Prevent browser reload/refresh after submit.
 
     let campus = {
+        id: this.props.campus.id,
         name: this.state.name,
         address: this.state.address,
         description: this.state.description,
         imageUrl: this.state.imageUrl
     };
 
-    // edit campus in back-end database
-    let newCampus = await this.props.editCampus(campus);
+    console.log("Old Campus: " + JSON.stringify(campus));
 
+    // edit campus in back-end database
+    let newCampus = await this.props.editCampus(campus,this.props.campus.id);
+    console.log("New Campus: " + JSON.stringify(newCampus));
     // Update state, and trigger redirect to show the new campus
     this.setState({
-      name: "",
-      address: "",
-      description: null,
-      imageUrl: "",
+      name: this.props.campus.name,
+      imageUrl: this.props.campus.imageUrl,
+      address: this.props.campus.address,
+      description: this.props.campus.description,
       redirect: true,
-      redirectId: newCampus.id
+      redirectId: this.props.campus.id
     });
   }
 
@@ -76,6 +87,7 @@ class EditCampusContainer extends Component {
       <div>
         <Header />
         <EditCampusView
+          campus={this.props.campus}
           handleChange = {this.handleChange}
           handleSubmit={this.handleSubmit}
         />
@@ -84,16 +96,25 @@ class EditCampusContainer extends Component {
   }
 }
 
+
+
 // The following input argument is passed to the "connect" function used by "EditCampusContainer" component to connect to Redux Store.
 // The "mapDispatch" argument is used to dispatch Action (Redux Thunk) to Redux Store.
 // The "mapDispatch" calls the specific Thunk to dispatch its action. The "dispatch" is a function of Redux Store.
 const mapDispatch = (dispatch) => {
     return({
-        editCampus: (campus) => dispatch(editCampusThunk(campus)),
+        editCampus: (campus,id) => dispatch(editCampusThunk(campus,id)),
+        fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
     })
 }
+
+const mapState = (state) => {
+    return {
+      campus: state.campus,
+    };
+};
 
 // Export store-connected container by default
 // EditCampusContainer uses "connect" function to connect to Redux Store and to read values from the Store
 // (and re-read the values when the Store State updates).
-export default connect(null, mapDispatch)(EditCampusContainer);
+export default connect(mapState, mapDispatch)(EditCampusContainer);

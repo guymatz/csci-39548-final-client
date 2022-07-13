@@ -47,27 +47,27 @@ const EditCampusView = (props) => {
         <div className={classes.formContainer}>
           <div className={classes.formTitle}>
             <Typography style={{fontWeight: 'bold', fontFamily: 'Courier, sans-serif', fontSize: '20px', color: '#11153e'}}>
-              Add a Campus
+              Edit Campus
             </Typography>
           </div>
           <form style={{textAlign: 'center'}} onSubmit={(e) => handleSubmit(e)}>
             <label style= {{color:'#11153e', fontWeight: 'bold'}}>Campus Name: </label>
-            <input type="text" name="name" value="{campus.name}" required onChange ={(e) => handleChange(e)} />
+            <input type="text" name="name" defaultValue={campus.name} required onChange ={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>Campus Address: </label>
-            <input type="text" name="address" value="{campus.address}" rquired onChange={(e) => handleChange(e)} />
+            <input type="text" name="address" defaultValue={campus.address} required onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>Campus Description: </label>
-            <input type="text" name="description" value="{campus.description}" onChange={(e) => handleChange(e)} />
+            <input type="text" name="description" defaultValue={campus.description} onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>Campus Image URL: </label>
-            <input type="text" name="imageUrl" value="{campus.imageUrl}" onChange={(e) => handleChange(e)} />
+            <input type="text" name="imageUrl" defaultValue={campus.imageUrl} onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
