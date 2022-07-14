@@ -1,5 +1,5 @@
 /*==================================================
-NewStudentContainer.js
+EnrollNewStudentContainer.js
 
 The Container component is responsible for stateful logic and data fetching, and
 passes data (if any) as props to the corresponding View component.
@@ -10,20 +10,22 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
-import NewStudentView from '../views/NewStudentView';
+import EnrollNewStudentView from '../views/EnrollNewStudentView';
 import { addStudentThunk } from '../../store/thunks';
 
-class NewStudentContainer extends Component {
+class EnrollNewStudentContainer extends Component {
   // Initialize state
   constructor(props){
     super(props);
+    console.log("props in Enroll CC: " + JSON.stringify(this.props))
+    //console.log("Campus ID Enroll CC: " + JSON.stringify(this.props.match.params.id))
     this.state = {
       firstname: "",
       lastname: "",
       email: "",
-      campusId: null,
-      gpa: null,
       imageUrl: null,
+      campusId: this.props.match.params.id,
+      gpa: null,
       redirect: false,
       redirectId: null
     };
@@ -41,28 +43,37 @@ class NewStudentContainer extends Component {
     event.preventDefault();  // Prevent browser reload/refresh after submit.
 
     let student = {
+        //id: this.props.student.id,
         firstname: this.state.firstname,
         lastname: this.state.lastname,
         email: this.state.email,
-        gpa: null,
-        imageUrl: this.state.imageUrl,
-        campusId: this.state.campusId
+        campusId: this.state.campusId,
+        gpa: this.state.gpa,
+        imageUrl: this.state.imageUrl
     };
 
-    // Add new student in back-end database
-    let newStudent = await this.props.addStudent(student);
+    //console.log("Old Student: " + JSON.stringify(student));
 
+    // edit student in back-end database
+    console.log("Student: " + JSON.stringify(student));
+    let newStudent = await this.props.addStudent(student);
+    console.log("New Student: " + JSON.stringify(newStudent));
     // Update state, and trigger redirect to show the new student
+
     this.setState({
-      firstname: "",
-      lastname: "",
-      email: "",
-      imageUrl: null,
-      campusId: null,
-      gpa: null,
+      /*
+      firstname: this.props.student.firstname,
+      lastname: this.props.student.lastname,
+      imageUrl: this.props.student.imageUrl,
+      email: this.props.student.email,
+      campusId: this.props.student.campusId,
+      gpa: this.props.student.gpa,
+      */
       redirect: true,
       redirectId: newStudent.id
     });
+
+    console.log("New Student State: " + JSON.stringify(this.state));
   }
 
   // Unmount when the component is being removed from the DOM:
@@ -81,7 +92,8 @@ class NewStudentContainer extends Component {
     return (
       <div>
         <Header />
-        <NewStudentView
+        <EnrollNewStudentView
+          campusId={this.props.match.params.id}
           handleChange = {this.handleChange}
           handleSubmit={this.handleSubmit}
         />
@@ -90,7 +102,9 @@ class NewStudentContainer extends Component {
   }
 }
 
-// The following input argument is passed to the "connect" function used by "NewStudentContainer" component to connect to Redux Store.
+
+
+// The following input argument is passed to the "connect" function used by "EnrollNewStudentContainer" component to connect to Redux Store.
 // The "mapDispatch" argument is used to dispatch Action (Redux Thunk) to Redux Store.
 // The "mapDispatch" calls the specific Thunk to dispatch its action. The "dispatch" is a function of Redux Store.
 const mapDispatch = (dispatch) => {
@@ -99,7 +113,13 @@ const mapDispatch = (dispatch) => {
     })
 }
 
+const mapState = (state) => {
+    return {
+      student: state.student,
+    };
+};
+
 // Export store-connected container by default
-// NewStudentContainer uses "connect" function to connect to Redux Store and to read values from the Store 
+// EnrollNewStudentContainer uses "connect" function to connect to Redux Store and to read values from the Store
 // (and re-read the values when the Store State updates).
-export default connect(null, mapDispatch)(NewStudentContainer);
+export default connect(mapState, mapDispatch)(EnrollNewStudentContainer);
